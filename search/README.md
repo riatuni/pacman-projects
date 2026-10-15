@@ -120,12 +120,15 @@ Implement the breadth-first search (`BFS`) algorithm in the `breadth_first_searc
 `python pacman.py -l bigMaze -p SearchAgent -a fn=bfs -z .5`
 
 Does `BFS` find the least cost solution? If not, check your implementation.
+>BFS does find the least cost solution. This is because it is complete and optimal for uniform cost problems.
 
-_Hint_: If Pacman moves too slowly for you, try the option `--frameTime 0`.
+_Hint_: If Pacman moves too slowly for you, try the option `--frame_time 0`.
+>correction: it is not frameTime but frame_time
 
 _Note_: If you've written your search code generically, your code should work equally well for the eight-puzzle search problem without any changes.
 
 `python eightpuzzle.py`
+> The code is written generically enough to work for the eightpuzzle too.
 
 
 ### Question 3 (3 points): Varying the Cost Function
