@@ -256,14 +256,15 @@ def a_star_search(problem, heuristic=null_heuristic):
     frontier = util.PriorityQueue()
     # initialize with inital state
     # store position and path in the frontier, and the initial priority
-    frontier.push([problem.get_start_state(),[]], float('-inf'))
+    frontier.push([problem.get_start_state(),[],0], 0)
     # define expanded nodes to ensure no repeats
     expanded = set()
 
     while not frontier.is_empty():
         # choose node from frontier: node added first
-        [n, path] = frontier.pop()
+        [n, path, cost] = frontier.pop()
         # add n to expanded nodes
+        if n in expanded: continue
         expanded.add(n)
 
         # if n is goalstate the return solution
@@ -272,16 +273,15 @@ def a_star_search(problem, heuristic=null_heuristic):
             return path
 
         # expand n: add successors to frontier
-        for m in problem.get_successors(n):
-            # (m contains [(x,y), direction, cost])
-            # check that it hasn't been expanded
-            if m[0] in expanded: continue
-            # use path cost as key for the queue
-            path_to_m = path+[m[1]]
+        for node, direction, step_cost in problem.get_successors(n):
+            # compute the path
+            path_to_m = path+[direction]
+            # compute new cost
+            new_cost = cost + step_cost
             # we'll use f = cost + heuristic(n) in tha priority list
-            f = m[2] + heuristic(m[0], problem)
+            f = new_cost + heuristic(node, problem)
             # add child to frontier: enqueue node
-            frontier.push([m[0], path_to_m], f)
+            frontier.push([node, path_to_m, new_cost], f)
 
     # otherwise return error
     return -1
