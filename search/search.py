@@ -141,14 +141,14 @@ def depth_first_search(problem):
     # store position and path in the frontier
     frontier.push([problem.get_start_state(),[]])
     # define expanded nodes to ensure no repeats
-    expanded = set()
+    expanded = []
 
     while not frontier.is_empty():
 
         # choose node from frontier: pop most recently added
         [n, path] = frontier.pop()
         # add n to expanded nodes
-        expanded.add(n)
+        expanded.append(n)
 
         # if n is goalstate the return solution
         if problem.is_goal_state(n):
@@ -179,7 +179,7 @@ def breadth_first_search(problem):
     # store position and path in the frontier
     frontier.push([problem.get_start_state(),[]])
     # define expanded nodes to ensure no repeats
-    expanded = set()
+    expanded = []
 
     while not frontier.is_empty():
         # choose node from frontier: node added first
@@ -187,7 +187,7 @@ def breadth_first_search(problem):
         # check that it hasn't been expanded
         if n in expanded: continue
         # add n to expanded nodes
-        expanded.add(n)
+        expanded.append(n)
 
         # if n is goalstate the return solution
         if problem.is_goal_state(n):
