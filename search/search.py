@@ -184,8 +184,9 @@ def breadth_first_search(problem):
     while not frontier.is_empty():
         # choose node from frontier: node added first
         [n, path] = frontier.pop()
-        # add n to expanded nodes
+        # check that it hasn't been expanded
         if n in expanded: continue
+        # add n to expanded nodes
         expanded.add(n)
 
         # if n is goalstate the return solution
@@ -196,8 +197,6 @@ def breadth_first_search(problem):
         # expand n: add successors to frontier
         for m in problem.get_successors(n):
             # (m contains [(x,y), direction, cost])
-            # check that it hasn't been expanded
-            if m[0] in expanded: continue
             # add child to frontier: enqueue node
             path_to_m = path+[m[1]]
             frontier.push([m[0], path_to_m])
