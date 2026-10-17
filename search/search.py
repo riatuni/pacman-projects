@@ -185,6 +185,7 @@ def breadth_first_search(problem):
         # choose node from frontier: node added first
         [n, path] = frontier.pop()
         # add n to expanded nodes
+        if n in expanded: continue
         expanded.add(n)
 
         # if n is goalstate the return solution
