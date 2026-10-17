@@ -154,7 +154,16 @@ You can test your `A*` implementation on the original problem of finding a path 
 `python pacman.py -l bigMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattan_heuristic`
 
 You should see that `A*` finds the optimal solution slightly faster than uniform cost search (about 549 vs. 620 search nodes expanded in our implementation, but ties in priority may make your numbers differ slightly). What happens on openMaze for the various search strategies?
+> We run the openMaze for the various strategies and found the pollowing results:
+> | Strategy | Expanded nodes | Optimal path |
+> | ----- | ---- | ---- |
+> | dfs| 806| no|
+> |bfs| 682| yes|
+> | ucs| 682| yes|
+> | A* (Euclidean) | 550 | yes|
+> | A* (Manhattan) | 535 | yes|
 
+> The DFS algorithm does not find an optimal path for this maze. However, the other ones do. Both in BFS and UCS have the same number of expanded nodes. And for A* there are differences number of expanded nodes given different heuristics.
 
 ### Question 5 (3 points): Finding All the Corners
 
