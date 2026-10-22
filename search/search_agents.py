@@ -544,8 +544,23 @@ def food_heuristic(state, problem):
     problem.heuristic_info['wallCount']
     """
     position, food_grid = state
-    "*** YOUR CODE HERE ***"
-    return 0
+    food = food_grid.as_list()
+
+    #if all dots have been eaten, stop
+    if not food:
+        return 0
+    
+    #as we will use manhattan distance to the farthest dot, we need a max_distance variable
+    #We will use the distance to the farthest dot because it provides a better approximation to the cost of eating all the dots. It is a lower bound because that is the minimum cost the solution could have
+    max_distance = 0
+    
+    #compute manhattan distance to all food dots and find the max_distance
+    for dot in food:
+        distance = abs(position[0] - dot[0]) + abs(position[1] - dot[1])
+        if distance > max_distance:
+            max_distance = distance
+
+    return max_distance
 
 
 def simplified_corners_heuristic(state, problem):
