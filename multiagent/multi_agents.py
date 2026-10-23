@@ -86,7 +86,7 @@ class ReflexAgent(Agent):
 
 
         ghost_reward = 0
-        for i, ghost_pos in enumerate(ghost_positions):
+        for ghost_pos in ghost_positions:
             dist = manhattan_distance(new_pos, ghost_pos)
             # if the ghost is far away and not scared
             if new_scared_times[0]==0 and dist > 10: continue
