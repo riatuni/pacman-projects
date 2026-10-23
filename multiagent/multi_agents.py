@@ -74,7 +74,32 @@ class ReflexAgent(Agent):
         new_scared_times = [ghostState.scared_timer for ghostState in new_ghost_states]
         
         "*** YOUR CODE HERE ***"
-        return successor_game_state.get_score()
+
+        food = new_food.as_list()
+        ghost_positions = successor_game_state.get_ghost_positions()
+
+        min_dist = float('inf')
+        food_reward = 0
+        for dot in food:
+            dist = manhattan_distance(new_pos, dot)
+            food_reward += (1/dist)
+
+
+        ghost_reward = 0
+        for i, ghost_pos in enumerate(ghost_positions):
+            dist = manhattan_distance(new_pos, ghost_pos)
+            # if the ghost is far away and not scared
+            if new_scared_times[0]==0 and dist > 10: continue
+            ghost_reward -= (10 - dist)
+
+        # if it's scared then the ghost reward becomes positive
+        if(new_scared_times[0]>0):
+            ghost_reward = -ghost_reward
+
+        #print(food_reward, ghost_reward)
+        score = food_reward + ghost_reward + successor_game_state.get_score()
+        
+        return score
 
 def score_evaluation_function(current_game_state):
     """
