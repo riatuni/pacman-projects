@@ -165,53 +165,42 @@ class MinimaxAgent(MultiAgentSearchAgent):
         #Get legal actions for all agents
         num_agents = game_state.get_num_agents();
 
-        def minimax(game_state, depth, agent):
+        def minimax(state, depth, agent):
             #Base case
-            if game_state.is_win() or game_state.is_lose() or depth==0:
-                return self.evaluation_function(game_state)
+            if state.is_win() or state.is_lose() or depth==0:
+                return self.evaluation_function(state)
 
             #Recursive case
-            actions = game_state.get_legal_actions(agent)
-            num_agents = game_state.get_num_agents()
+            actions = state.get_legal_actions(agent)
             next_agent = (agent+1) % num_agents
             next_depth = depth-1 if next_agent == 0 else depth 
 
             if agent == 0:
-                bestScore = float('-inf')
+                best_score = float('-inf')
                 for action in actions:
-                    score = minimax(game_state.generate_successor(agent,action), next_depth, next_agent)
-                    bestScore = max(bestScore, score)
-                return bestScore           
+                    score = minimax(state.generate_successor(agent,action), next_depth, next_agent)
+                    best_score = max(best_score, score)
+                return best_score           
 
             else:
-                bestScore = float('inf')
+                best_score = float('inf')
                 for action in actions:
-                    score = minimax(game_state.generate_successor(agent,action), next_depth, next_agent)
-                    bestScore = min(bestScore, score)
-                return bestScore           
+                    score = minimax(state.generate_successor(agent,action), next_depth, next_agent)
+                    best_score = min(best_score, score)
+                return best_score           
 
                 
 
-        bestAction = None
-        bestScore = float('-inf')
+        best_action = None
+        best_score = float('-inf')
         actions = game_state.get_legal_actions(0)
         for action in actions:
             score = minimax(game_state.generate_successor(0,action), self.depth, 1)
-            if score > bestScore:
-                bestScore = score
-                bestAction = action
-        return bestAction
+            if score > best_score:
+                best_score = score
+                best_action = action
+        return best_action
 
-
-        
- 
-
-
-            
-        
-
-
-    
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
