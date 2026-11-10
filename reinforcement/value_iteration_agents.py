@@ -102,7 +102,19 @@ class ValueIterationAgent(ValueEstimationAgent):
           value function stored in self.values.
         """
         "*** YOUR CODE HERE ***"
-        util.raise_not_defined()
+
+        total = 0
+        # get possible transitions
+        transitions = self.mdp.get_transition_states_and_probs(state, action)
+        # for each possible state get the probability of reaching it
+        for next_state, probability in transitions:
+            reward = self.mdp.get_reward(state, action, next_state)
+            future_val = self.values[next_state]
+            #add the reward to the future value and multiply by the probability
+            total += probability *(reward + self.discount * future_val)
+        # return total
+        return total
+        #util.raise_not_defined()
 
     def compute_action_from_values(self, state):
         """
@@ -114,11 +126,28 @@ class ValueIterationAgent(ValueEstimationAgent):
           terminal state, you should return None.
         """
         "*** YOUR CODE HERE ***"
-        if self.state.is_win() or self.state.is_lose():
+        # if its a terminal state return none
+        if self.mdp.is_terminal(state):
             return None
 
+        # if there are no possible actions return none
+        actions = self.mdp.get_possible_actions(state)
+        if not actions:
+            return None
+
+        # otherwise return the action with wighest value
+        best_action = None
+        best_value = float('-inf')
+
+        for action in actions:
+            q_value = self.compute_q_value_from_values(state, action)
+            if q_value > best_value:
+                best_value = q_value
+                best_action = action
+
+        return best_action
         
-        util.raise_not_defined()
+        #util.raise_not_defined()
 
     def get_policy(self, state):
         return self.compute_action_from_values(state)
