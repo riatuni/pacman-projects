@@ -65,7 +65,30 @@ class ValueIterationAgent(ValueEstimationAgent):
           Run the value iteration algorithm. Note that in standard
           value iteration, V_k+1(...) depends on V_k(...)'s.
         """
-        "*** YOUR CODE HERE ***"
+        
+        states = self.mdp.get_states()
+
+        for iteration in range(self.iterations):
+            next_values = util.Counter()
+
+            for state in states:
+                if self.mdp.is_terminal(state):
+                    continue
+
+                #Markov decision process
+                actions = self.mdp.get_possible_actions(state)
+
+                #RAn out of actions
+                if not actions:
+                    continue
+
+                #V_k+1 = max(sumatory of [probability * reward (for all possible actions)])
+                next_values[state] = max(
+                    sum(
+                        probability * (self.mdp.get_reward(state, action, next_state) + self.discount * self.values[next_state]) for next_state, probability in self.mdp.get_transition_states_and_probs(state, action)
+                    ) for action in actions)
+            self.values = next_values
+
             
     def get_value(self, state):
         """
@@ -91,6 +114,10 @@ class ValueIterationAgent(ValueEstimationAgent):
           terminal state, you should return None.
         """
         "*** YOUR CODE HERE ***"
+        if self.state.is_win() or self.state.is_lose():
+            return None
+
+        
         util.raise_not_defined()
 
     def get_policy(self, state):
@@ -152,4 +179,3 @@ class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
 
     def run_value_iteration(self):
         """*** YOUR CODE HERE ***"""
-
