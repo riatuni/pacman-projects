@@ -165,53 +165,42 @@ class MinimaxAgent(MultiAgentSearchAgent):
         #Get legal actions for all agents
         num_agents = game_state.get_num_agents();
 
-        def minimax(game_state, depth, agent):
+        def minimax(state, depth, agent):
             #Base case
-            if game_state.is_win() or game_state.is_lose() or depth==0:
-                return self.evaluation_function(game_state)
+            if state.is_win() or state.is_lose() or depth==0:
+                return self.evaluation_function(state)
 
             #Recursive case
-            actions = game_state.get_legal_actions(agent)
-            num_agents = game_state.get_num_agents()
+            actions = state.get_legal_actions(agent)
             next_agent = (agent+1) % num_agents
             next_depth = depth-1 if next_agent == 0 else depth 
 
             if agent == 0:
-                bestScore = float('-inf')
+                best_score = float('-inf')
                 for action in actions:
-                    score = minimax(game_state.generate_successor(agent,action), next_depth, next_agent)
-                    bestScore = max(bestScore, score)
-                return bestScore           
+                    score = minimax(state.generate_successor(agent,action), next_depth, next_agent)
+                    best_score = max(best_score, score)
+                return best_score           
 
             else:
-                bestScore = float('inf')
+                best_score = float('inf')
                 for action in actions:
-                    score = minimax(game_state.generate_successor(agent,action), next_depth, next_agent)
-                    bestScore = min(bestScore, score)
-                return bestScore           
+                    score = minimax(state.generate_successor(agent,action), next_depth, next_agent)
+                    best_score = min(best_score, score)
+                return best_score           
 
                 
 
-        bestAction = None
-        bestScore = float('-inf')
+        best_action = None
+        best_score = float('-inf')
         actions = game_state.get_legal_actions(0)
         for action in actions:
             score = minimax(game_state.generate_successor(0,action), self.depth, 1)
-            if score > bestScore:
-                bestScore = score
-                bestAction = action
-        return bestAction
+            if score > best_score:
+                best_score = score
+                best_action = action
+        return best_action
 
-
-        
- 
-
-
-            
-        
-
-
-    
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
@@ -223,7 +212,61 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         Returns the minimax action using self.depth and self.evaluation_function
         """
         "*** YOUR CODE HERE ***"
-        util.raise_not_defined()
+        #Get legal actions for all agents
+        num_agents = game_state.get_num_agents();
+
+        def alphabetaMinimax(state, depth, agent, alpha, beta):
+            #Base case
+            if state.is_win() or state.is_lose() or depth==0:
+                return self.evaluation_function(state)
+
+            #Recursive case
+            actions = state.get_legal_actions(agent)
+            next_agent = (agent+1) % num_agents
+            next_depth = depth-1 if next_agent == 0 else depth 
+
+            if agent == 0:
+                v = float('-inf') # (changed nomenclature to v as in readme and slides)
+                for action in actions:  # for all possible actions (successor states)
+                    successor = state.generate_successor(agent,action)
+                    v = max(v, alphabetaMinimax(successor, next_depth, next_agent, alpha, beta))
+                    # if the value is greater than beta then the brach can be pruned, 
+                    # and simply return tha value of v
+                    if v > beta: return v
+                    # update the value of alpha to the maximum with the value v
+                    alpha = max(alpha, v)
+                return v           
+
+            else:
+                v = float('inf') 
+                for action in actions:  # for all possible actions (successor states)
+                    successor = state.generate_successor(agent,action)
+                    v = min(v, alphabetaMinimax(successor, next_depth, next_agent, alpha, beta))
+                    # if the value is less than alpha then the brach can be pruned, 
+                    # and simply return tha value of v
+                    if v < alpha: return v
+                    # update the value of beta to the minimum with the value v
+                    beta = min(beta, v)
+                return v                
+
+                
+        alpha = float('-inf')
+        beta = float('inf')
+
+        best_action = None
+        best_score = float('-inf')
+        for action in game_state.get_legal_actions(0):
+            successor = game_state.generate_successor(0,action)
+            score = alphabetaMinimax(successor, self.depth, 1, alpha=alpha, beta=beta)
+            if score > best_score:
+                best_score = score
+                best_action = action
+            # update the value of alpha
+            alpha = max(alpha, best_score)
+        return best_action
+
+
+        #util.raise_not_defined()
 
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
