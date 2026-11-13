@@ -26,7 +26,8 @@ def question2():
     # worth it. This is obtained by lowering the noise value and ensuring that the agent
     # always takes the desired action (left or right).
     answer_discount = 0.9
-    answer_noise = 0
+    # changing the noise to zero, means no chance on "falling off the bridge"
+    answer_noise = 0.0
     return answer_discount, answer_noise
 
 def question3a():
