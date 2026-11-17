@@ -194,7 +194,7 @@ class AsynchronousValueIterationAgent(ValueIterationAgent):
         for i in range(self.iterations):
             # get the specific state
             state = states[i % len(states)]
-            
+
             # check if it is a terminal state
             if self.mdp.is_terminal(state): continue
 
@@ -228,3 +228,74 @@ class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
 
     def run_value_iteration(self):
         """*** YOUR CODE HERE ***"""
+        # since it is prioritized we'll use a queue and track de prestates
+        # get the states
+        states = self.mdp.get_states()
+        # declare prestate
+        prestates = {}
+        for state in states: 
+            prestates[state] = set()
+
+        # for each state
+        for state in states:
+            # for each possible action
+            for action in self.mdp.get_possible_actions(state):
+                # get next state and probability of transition states
+                for next_state, p in (self.mdp.get_transition_states_and_probs(state, action)):
+                    # if there's a possibility of transition
+                    if p > 0:
+                        # add the state to prestate of the next
+                        prestates[next_state].add(state)
+
+        # declare queue
+        queue = util.PriorityQueue()
+
+        for state in states:
+            if self.mdp.is_terminal(state):
+                continue
+
+            actions = self.mdp.get_possible_actions(state)
+
+            # calculate best q value of all the actions
+            best_q_value = max(
+                self.compute_q_value_from_values(state, action)
+                for action in actions
+            )
+            # calculate the difference and push it into the queue
+            difference = abs(self.values[state] - best_q_value)
+            queue.push(state, -difference)
+
+        # empty the priority queue
+        for i in range(self.iterations):
+            if queue.is_empty():
+                break
+
+            # get state from the queue
+            state = queue.pop()
+            actions = self.mdp.get_possible_actions(state)
+
+            # calculate new values
+            if actions and not self.mdp.is_terminal(state):
+                self.values[state] = max(
+                    self.compute_q_value_from_values(state, action)
+                    for action in actions
+                )
+
+            # update queue given the prestates
+            for prestate in prestates[state]:
+                if self.mdp.is_terminal(prestate):
+                    continue
+
+                actions = self.mdp.get_possible_actions(prestate)
+                if not actions:
+                    continue
+
+                best_q_value = max(
+                    self.compute_q_value_from_values(prestate, action)
+                    for action in actions
+                )
+                difference = abs(self.values[prestate] - best_q_value)
+
+                # update queue with the difference
+                if difference > self.theta:
+                    queue.update(prestate, -difference)
